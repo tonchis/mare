@@ -1,0 +1,63 @@
+// https://projecteuler.net/problem=2
+//
+:actor Counter
+  :prop count USize
+
+  :new (@count = 0)
+
+  :be increment (number = 1)
+    @count = @count + number
+    None
+
+  :be display
+    Inspect.out(@count)
+    None
+
+:actor Fibonacci
+  :prop previous USize
+  :prop current USize
+  :prop observer Main
+
+  :new (@observer, @previous = 1, @current = 1)
+    @advance
+
+  :be advance
+    next = @previous + @current
+    @previous = @current
+    @current = next
+
+    @observer.advanced(@, @current)
+
+    None
+
+:trait tag FibonacciObserver
+  // :be advanced(fibonacci Fibonacci, number USize)
+  :fun tag advanced (fibonacci Fibonacci, number USize) None
+
+:actor Main
+  // :is FibonacciObserver
+
+  :prop counter Counter
+
+  :new (env)
+    @counter = Counter.new
+
+    fibonacci = Fibonacci.new(@)
+
+    // number USize = 1
+    // while (number < 4000000) (
+    //   number = fibonacci.advance
+    //   if (number % 2 == 0) (counter.increment(number))
+    // )
+
+    // [SPOILER ALERT] sum is 4613732
+    // counter.display
+
+  :be advanced (fibonacci Fibonacci, number USize)
+    if (number < 4000000) (
+      if (number % 2 == 0) (@counter.increment(number))
+
+      fibonacci.advance
+    |
+      @counter.display
+    )
